@@ -27,3 +27,12 @@ Ensure the following are installed on your system:
    git clone <repository-url>
    cd BrowserStackAssignments
    ```
+
+## Project Structure Screenshot
+![Project Structure](images/Project_Structure.png)
+
+
+## Project Console Output
+![Console Output](images/Output.png)
+
+
