@@ -8,8 +8,11 @@ import org.browserstack.service.TranslatorService;
 import org.browserstack.utility.ImageDownloader;
 import org.browserstack.utility.TextAnalyzer;
 import org.browserstack.utility.WebsiteValidator;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
@@ -40,6 +43,18 @@ public class ScraperManager {
         this.imageDownloader = new ImageDownloader();
     }
 
+    public static void acceptCookies(WebDriver driver) {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement acceptButton = wait.until(
+                    ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='didomi-notice-agree-button']"))
+            );
+            acceptButton.click();
+        } catch (Exception e) {
+            System.err.println("Failed to accept cookies: " + e.getMessage());
+        }
+    }
+
     private void navigateToOpinionSection() {
         String opinionUrl = config.getProperty("website.opinion.url");
         driver.get(opinionUrl);
@@ -49,6 +64,7 @@ public class ScraperManager {
     public void execute() {
         try {
             navigateToOpinionSection(); //go to Opinion page
+            acceptCookies(driver); //accept cookie
             websiteValidator.validateSpanishLanguage(); //Verify Spanish Language
             List<Article> articles = articleScraper.scrapeArticles(); //scrape first 5 Articles
             List<String> translatedHeaders = translateHeaders(articles); //translate the articles
